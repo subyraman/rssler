@@ -1,0 +1,64 @@
+
+<div class="modal-header">
+    <h3 class="modal-title">Advanced Search</h3>
+</div>
+
+<div class="modal-body advanced-search-body">
+        <div class="form-group">
+            <label>Keywords:</label>
+            <input type="text" class="form-control" id="new-feed-url" ng-model="advancedSearchCtrl.searchData.keywords">
+        </div>
+        <div class="row">
+            <div class="form-group col-lg-6">
+                <label for="new-feed-url">Feeds:</label>
+                <ui-select multiple ng-model="advancedSearchCtrl.selectedFeeds"
+                             theme="bootstrap"
+                             >
+                    <ui-select-match placeholder="Select a feed...">{{$item.title}}</ui-select-match>
+                    <ui-select-choices repeat="feed in advancedSearchCtrl.feeds | filter:$select.search">
+                        <div ng-bind-html="feed.title | highlight: $select.search"></div>
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+
+            <div class="form-group col-lg-6">
+                <label for="new-feed-url">Categories:</label>
+                <ui-select multiple ng-model="advancedSearchCtrl.selectedCategories"
+                             theme="bootstrap"
+                             >
+                    <ui-select-match placeholder="Select a category...">{{$item.title}}</ui-select-match>
+                    <ui-select-choices repeat="category in advancedSearchCtrl.categories | filter:$select.search">
+                        <div ng-bind-html="category.title | highlight: $select.search"></div>
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <label for="">Published After:</label>
+                <p class="input-group">
+                    <input type="text" class="form-control" show-weeks="{{false}}" datepicker-popup="MM/dd/yyyy" ng-model="advancedSearchCtrl.startDate" is-open="advancedSearchCtrl.startOpened" />
+                    <span class="input-group-btn">
+                    <button type="button" class="btn btn-default" ng-show="advancedSearchCtrl.startDate" ng-click="advancedSearchCtrl.startDate = ''"><i class="glyphicon glyphicon-remove"></i></button>
+                    <button type="button" class="btn btn-default" ng-click="advancedSearchCtrl.openStart($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </p>
+            </div>
+            <div class="col-lg-6">
+                <label for="">Published Before:</label>
+                <p class="input-group">
+                    <input type="text" class="form-control" show-weeks="{{false}}" datepicker-popup="MM/dd/yyyy" ng-model="advancedSearchCtrl.endDate" is-open="advancedSearchCtrl.endOpened" />
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-show="advancedSearchCtrl.endDate" ng-click="advancedSearchCtrl.endDate = ''"><i class="glyphicon glyphicon-remove"></i></button>
+                        <button type="button" class="btn btn-default" ng-click="advancedSearchCtrl.openEnd($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </p>
+            </div>
+        </div>
+
+
+</div>
+<div class="modal-footer">
+    <button class="btn btn-warning" ng-click="advancedSearchCtrl.close()">Cancel</button>
+    <button class="btn btn-primary" ng-click="advancedSearchCtrl.search()">Search</button>
+</div>

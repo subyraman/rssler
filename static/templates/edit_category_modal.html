@@ -1,0 +1,29 @@
+<div class="modal-header">
+    <h3 class="modal-title">New Category</h3>
+</div>
+
+<div class="modal-body">
+    <div class="form-group">
+        <label for="new-category-title">Category Title:</label>
+        <input type="text" class="form-control" id="new-category-title" ng-model="editCategoryCtrl.categoryData.title">
+    </div>
+
+    <div class="form-group">
+        <label for="new-feed-url">Feeds:</label>
+        <ui-select multiple ng-model="editCategoryCtrl.selectedFeeds"
+                     theme="bootstrap"
+                     >
+            <ui-select-match placeholder="Select a category...">{{$item.title}}</ui-select-match>
+            <ui-select-choices repeat="feed in editCategoryCtrl.feeds | filter:$select.search">
+                <div ng-bind-html="feed.title | highlight: $select.search"></div>
+            </ui-select-choices>
+        </ui-select>
+    </div>
+
+    <alert ng-repeat="alert in editCategoryCtrl.alerts" type="{{alert.type}}" close="editCategoryCtrl.closeAlert(alert)">{{alert.msg}}</alert>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-warning" ng-click="editCategoryCtrl.close()">Cancel</button>
+    <button class="btn btn-primary" ng-click="editCategoryCtrl.editCategory()">Edit</button>
+</div>

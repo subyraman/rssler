@@ -1,0 +1,3 @@
+[console_scripts]
+yuicompressor = yuicompressor:main
+

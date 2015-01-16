@@ -1,0 +1,15 @@
+<div class="btn-group" dropdown is-open="status.isopen" ng-show="feedCtrl.currentView.data.type !== 'all' && feedCtrl.currentView.data.type !== 'search'">     
+    <button class="btn btn-default btn-xs dropdown-toggle" dropdown-toggle><span class="glyphicon glyphicon-cog"></span></button>
+    
+    <ul class="dropdown-menu" role="menu" ng-if="feedCtrl.currentView.data.type === 'feed'">
+        <li><a href="#" ng-click="feedCtrl.editFeed()"><span class="glyphicon glyphicon-wrench"></span> Edit Feed</a></li>
+        <li class="divider"></li>
+        <li><a href="#" ng-click="feedCtrl.deleteFeed()"><span class="glyphicon glyphicon-remove-sign"></span> Delete Feed</a></li>
+    </ul>
+
+    <ul class="dropdown-menu" role="menu" ng-if="feedCtrl.currentView.data.type === 'category'">
+        <li><a href="#" ng-click="feedCtrl.editCategory()"><span class="glyphicon glyphicon-wrench"></span> Edit Category</a></li>
+        <li class="divider"></li>
+        <li><a href="#" ng-click="feedCtrl.deleteCategory()"><span class="glyphicon glyphicon-remove-sign"></span> Delete Category</a></li>
+    </ul>
+</div>

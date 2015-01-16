@@ -1,0 +1,37 @@
+@import '_variables'
+
+#sidebar
+    font-family: $body-font
+    position: fixed
+    height: 100%
+    overflow-y: scroll
+
+    a
+        display: inline
+
+.nav > li
+    padding: 1px 0
+
+    > a:hover, > a:focus
+        background: none
+
+    i
+        float: right
+
+.new-feed
+    margin: 5px
+
+.feeds
+    list-style-type: none
+    display: none
+
+
+
+@media (max-width:767px)
+    .sidebar-expanded
+        z-index: 10
+        width: 40%
+        background: white
+
+        .hidden-xs
+            display: block !important

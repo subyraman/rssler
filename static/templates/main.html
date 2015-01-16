@@ -1,0 +1,72 @@
+<sidebar></sidebar>
+
+<div class="column col-sm-9 col-xs-11 col-sm-offset-3 col-xs-offset-1 feed-view" ng-controller="FeedController as feedCtrl" ng-show="mainCtrl.visible.feedView">
+    
+    <div ng-show="feedCtrl.hasCategories()">
+        <header ng-show="feedCtrl.currentFeed.length">
+            <h3>{{feedCtrl.currentView.data.title}}</h3>
+            <pagination total-items="feedCtrl.currentView.data.totalItems" ng-model="feedCtrl.currentView.data.page" items-per-page="40" class="pagination-sm" max-size="5" boundary-links="true" rotate="false" ng-change="feedCtrl.updatePage()"></pagination>
+
+            <edit-dropdown></edit-dropdown>
+        </header>
+        <table class="table feed-table">
+            <tr ng-repeat="article in feedCtrl.currentFeed">
+                <td ng-class="{'col-sm-8': article.feed.title, 'col-sm-10': !article.feed.title}">
+                    <a class="article-title" ng-click="mainCtrl.loadArticle(article)">{{article.title}}</a>
+                </td>
+                <td>
+                    <h6 class="article-feed" ng-click="mainCtrl.loadFeed({id: article.feed.id})">{{article.feed.title}}</h6>
+                </td>
+                <td class="col-sm-2">
+                    <span class='article-time'>{{article.published_at | dateFilter }}</span>
+                </td>
+            </tr>
+        </table>
+
+        <footer ng-show="feedCtrl.currentFeed.length">
+            <pagination total-items="feedCtrl.currentView.data.totalItems" ng-model="feedCtrl.currentView.data.page" items-per-page="40" class="pagination-sm" max-size="5" boundary-links="true" rotate="false" ng-change="feedCtrl.updatePage()"></pagination>
+        </footer>
+    </div>
+
+    <div ng-show="!feedCtrl.hasCategories()">
+        <div class="text-center"><h2>Hi There!</h2></div>
+
+        <div class="text-center"><p>Get started by adding some feeds or importing an OPML file.</p></div>
+
+        <div class="text-center">
+                <button class="btn btn-primary btn-lg" ng-click="mainCtrl.openNewFeedModal()">New Feed</button>
+        </div>    
+        <div class="text-center">
+            <button class="btn btn-primary btn-lg" ng-click="mainCtrl.openSettings()">Import OPML file</button>
+        </div>
+        </div>
+
+    </div>
+
+</div>
+
+<div class="column col-sm-9 col-xs-11 col-sm-offset-3 col-xs-offset-1 article-view"
+    ng-controller="ArticleController as articleCtrl"
+    ng-show="mainCtrl.visible.articleView"
+    >
+
+    <header>
+        <a href="#" ng-click="mainCtrl.backToFeed()" class="btn btn-primary btn-sm">
+            <span class="glyphicon glyphicon-arrow-left"></span> Back
+        </a>
+    </header>
+    
+    <a href="{{articleCtrl.currentArticle.href}}" target="_blank">
+        <h2 ng-bind-html="articleCtrl.currentArticle.title"></h2>
+    </a>
+    <a href="" ng-click="mainCtrl.loadFeed(articleCtrl.currentArticle.feed)">
+        <h4 class="article-feed" ng-bind-html="articleCtrl.currentArticle.feed.title" ></h4>
+    </a>
+
+    <div ng-bind-html="articleCtrl.currentArticle.content"></div>
+    <footer>
+        <a href="#" ng-click="mainCtrl.backToFeed()" class="btn btn-primary btn-sm">
+            <span class="glyphicon glyphicon-arrow-left"></span> Back
+        </a>
+    </footer>
+</div>

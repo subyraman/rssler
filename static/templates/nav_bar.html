@@ -1,0 +1,24 @@
+<nav class="navbar navbar-default" ng-controller="NavController as navCtrl">
+    <div class="row">
+    <div class="col-sm-2 col-xs-2">
+        <span class="glyphicon btn-lg" ng-class="{'glyphicon-refresh loading-spinner' : navCtrl.loadingStatus.isLoading}"></span>
+    </div>
+    <div class="column col-sm-5 col-xs-8 col-sm-offset-1 search-wrapper" ng-controller="SearchController as searchCtrl">
+        <form role='form' ng-submit="searchCtrl.search()">
+            <div class="input-group search-wrapper">
+                <input type="text" class="form-control" ng-model="searchCtrl.searchData.keywords" placeholder="Search for...">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="submit">
+                        <span class="glyphicon glyphicon-search"></span><span class="hidden-xs">Search</span>
+                    </button>
+                    <button class="btn btn-default" type="button" ng-click="searchCtrl.advancedSearch($event)">
+                        <span class="glyphicon glyphicon-wrench"></span><span class="hidden-xs">Advanced</span>
+                    </button>
+              </span>
+            </div>
+        </form>
+    </div>
+
+    <div class="settings-icon"><span class="glyphicon btn btn-lg glyphicon-cog" ng-click="navCtrl.openSettings()"></span></div>
+    </div>
+</nav>

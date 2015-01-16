@@ -1,0 +1,32 @@
+<div class="column col-sm-3 col-xs-1 sidebar-offcanvas" id="sidebar" sidebar-expand ng-controller="CategoryController as categoryCtrl">   
+    <ul class="nav">
+    <li><a href="#" data-toggle="offcanvas" class="visible-xs text-center"><i class="glyphicon glyphicon-chevron-right"></i></a></li>
+  </ul>
+   
+    <ul class="nav hidden-xs" id="lg-menu">
+        
+        <button class="btn btn-primary btn-sm new-feed" ng-click="mainCtrl.openNewFeedModal()"><span class="glyphicon glyphicon-plus-sign"></span> New Feed</button>
+        <button class="btn btn-primary btn-sm new-feed" ng-if="categoryCtrl.hasCategories()" ng-click="mainCtrl.newCategory()"><span class="glyphicon glyphicon-plus-sign"></span> New Category</button>
+        <li>
+            <a href="#" ng-if="categoryCtrl.hasCategories()"><span ng-click="mainCtrl.loadAllCategoryFeeds()">All</span></a>
+        </li>
+
+        <li ng-repeat="category in categoryCtrl.categories">
+            <a href="#">
+                <span ng-click="mainCtrl.loadCategoryFeeds(category)">{{category.title}}</span>
+                <i class="glyphicon"
+                    ng-class="{'glyphicon-chevron-right': !category.expanded, 'glyphicon-chevron-down': category.expanded}" ng-click="categoryCtrl.toggle(category)">
+                </i>
+            </a>
+            <ul class="feeds slide" slide-down slide-toggle-duration="100" category="category">
+                <li ng-repeat="feed in category.feeds">
+                    <a href="#" ng-click="mainCtrl.loadFeed(feed)">{{feed.title}}</a>
+                </li>
+            </ul>
+        </li>
+
+        <li ng-repeat="feed in categoryCtrl.uncategorized.feeds">
+            <a href="#" ng-click="mainCtrl.loadFeed(feed)">{{feed.title}}</a>
+        </li>
+    </ul>
+</div>

@@ -1,0 +1,63 @@
+@import '_variables'
+
+.feed-view 
+    h3
+        display: inline-block
+
+    h6
+        margin: 0
+        cursor: pointer
+
+        &:hover
+            text-decoration: underline
+
+    a
+        cursor: pointer
+
+    .dropdown-toggle
+        background: transparent
+
+    .btn-group
+        margin-left: 10px
+        margin-bottom: 5px
+
+        &.open a
+            background: transparent
+
+    .dropdown-menu
+        a
+            font-size: 12px
+            padding: 3px 9px
+        span
+            margin-right: 10px
+
+
+    .pagination
+        float: right
+    
+    .feed-table
+        table-layout: fixed
+
+        td
+            padding: 5px
+
+    .article-title
+        max-width: 90%
+        color: $font-color
+        font-weight: 700
+
+    .article-feed
+        overflow: hidden
+        text-overflow: ellipsis
+        white-space: nowrap
+        display: inline-block
+        max-width: 90%
+
+    .article-time
+        float: right
+        color: #444444
+        font-weight: 300
+
+    .text-center
+        margin: 5px 0
+

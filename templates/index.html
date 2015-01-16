@@ -1,0 +1,64 @@
+<%!
+    from app import app
+    
+    if app.config['DEBUG']:
+        from assets import env
+%>
+
+<!doctype html>
+
+<html ng-app="rssler">
+    <base href="/" />
+    <head>
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        % if app.config['DEBUG']:
+            % for url in env['bootstrap_css'].urls():
+                <link rel="stylesheet" href="${url}" />
+            % endfor
+
+             % for url in env['sass'].urls():
+                <link rel="stylesheet" href="${url}" />
+            % endfor
+        % else:
+            <link rel="stylesheet" href="/static/bootstrap.css" />
+            <link rel="stylesheet" href="/static/rssler.css" />
+        % endif
+
+    <head>
+    <body>
+        <div ng-controller="LoadingController as loadingCtrl">
+            <div class="loading-screen" loading-screen has-loaded="loadingCtrl.hasLoaded">
+                <div class="loading-wrapper">
+                    <h1>RSSLER</h1>
+                    <div class="bottom-half">
+                        <p>Loading...</p>
+                        <progressbar max="2" value="loadingCtrl.loaded_percent()"></progressbar>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <nav-bar></nav-bar>
+        <div class="container-fluid">
+
+            
+
+            <div class="main-content" ng-view></div>
+
+        </div>
+
+        % if app.config['DEBUG']:
+            % for url in env['angular'].urls():
+                <script src="${url}"></script>
+            % endfor
+
+            % for url in env['coffee'].urls():
+                <script src="${url}"></script>
+            % endfor
+        % else:
+            <script src="/static/ng.js"></script>
+            <script src="/static/app.js"></script>
+        % endif
+
+    </body>
+</html>

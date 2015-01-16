@@ -1,0 +1,4 @@
+*.pyc
+static/.webassets-cache/*
+.webassets-cache/*
+twistd.log

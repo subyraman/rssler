@@ -1,0 +1,28 @@
+<div class="modal-header">
+    <h3 class="modal-title">Edit Feed</h3>
+</div>
+
+<div class="modal-body">
+
+    <div class="form-group">
+        <label for="new-feed-url">Feed Title:</label>
+        <input type="text" class="form-control" id="new-feed-url" ng-model="editFeedCtrl.feedData.title">
+    </div>
+    
+    <div class="form-group">
+        <label for="new-feed-url">Feed Categories:</label>
+        <ui-select multiple ng-model="editFeedCtrl.selectedCategories" theme="bootstrap" ng-if="editFeedCtrl.categories.length">
+            <ui-select-match placeholder="Edit Categories">{{$item.title}}</ui-select-match>
+            <ui-select-choices repeat="category in editFeedCtrl.categories | filter:$select.search">
+                <div ng-bind-html="category.title | highlight: $select.search"></div>
+            </ui-select-choices>
+        </ui-select>
+    </div>
+
+    <alert ng-repeat="alert in editFeedCtrl.alerts" type="{{alert.type}}" close="editFeedCtrl.closeAlert(alert)">{{alert.msg}}</alert>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-warning" ng-click="editFeedCtrl.close()">Cancel</button>
+    <button class="btn btn-primary" ng-click="editFeedCtrl.editFeed()">Edit</button>
+</div>

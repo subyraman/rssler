@@ -1,0 +1,30 @@
+<div class="modal-body settings-modal">
+    <tabset justified="true">
+    <tab heading="OPML Import">
+        <div class="form-group">
+            <label for="">Choose an OPML file to import</label>
+            <input type="file" id="file" name="file"/>
+        </div>
+
+        <div class="form-group">
+            <button class="btn btn-primary" ng-click="settingsCtrl.submit()">Submit</button>
+        </div>
+
+        <alert ng-repeat="alert in settingsCtrl.opmlAlerts" type="{{alert.type}}" close="settingsCtrl.closeAlert(alert)">{{alert.msg}}</alert>
+
+    </tab>
+
+    <tab heading="Database">
+        <div class="row">
+            <p>Database size is currently <b>{{settingsCtrl.dbSize | byteFilter}}</b>.</p>
+        </div>
+        <div class="row">
+            <a href="/db" target="_self" class="btn btn-default btn-lg">Download Database</a>
+        </div>
+    </tab>
+  </tabset>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-warning" ng-click="settingsCtrl.close()">Close</button>
+</div>
