@@ -12,7 +12,7 @@ from models import Category, Feed, Article
 import feedparser
 
 from datetime import datetime
-from time import mktime
+from time import mktime, sleep
 
 current_dir = os.path.dirname(os.path.realpath(__file__))
 engine = create_engine('sqlite:///' + os.path.join(current_dir, 'rss.db'))
@@ -124,6 +124,9 @@ class AsyncClient:
 
 
 def run():
+    # Give time for the app sequence to create the DB
+    sleep(5)
+
     print "%s: Refreshing feeds..." % str(datetime.now())
     async_client = AsyncClient()
     async_client.run()
