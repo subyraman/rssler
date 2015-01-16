@@ -16,19 +16,6 @@ do (angular=angular) ->
 
         $locationProvider.html5Mode(true)
 
-
-    rssler.run ['$location', '$rootScope', ($location, $rootScope) ->
-        $rootScope.$on('$routeChangeSuccess', (event, current, previous) ->
-
-            if current.$$route
-                title = current.$$route.title
-            else
-                title = "Raman RSS"
-
-            document.title = title
-        )
-    ]
-
     rssler.config (datepickerConfig, datepickerPopupConfig) ->
         datepickerConfig.showWeeks = false
         datepickerPopupConfig.closeText = "Close"
