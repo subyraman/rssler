@@ -6,7 +6,7 @@ import subprocess
 
 
 if __name__ == "__main__":
-    main = subprocess.Popen(['python', os.path.join(os.path.dirname(__file__), 'main_twisted.py')])
+    main = subprocess.Popen(['python', os.path.join(os.path.dirname(__file__), 'main.py')])
     async = subprocess.Popen(['python', os.path.join(os.path.dirname(__file__), 'daemon.py')])
     
     raw_input()
