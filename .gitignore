@@ -2,3 +2,5 @@
 static/.webassets-cache/*
 .webassets-cache/*
 twistd.log
+rss.db
+.Python
