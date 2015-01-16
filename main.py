@@ -27,15 +27,19 @@ def get_app():
 
 app = get_app()
 
-if __name__ == "__main__":    
-    resource = WSGIResource(reactor, reactor.getThreadPool(), app)
-    site = Site(resource)
-    host = interface=app.config['HOST']
-    port = app.config['PORT']
-    print 'Running server on %s:%s' % (host, port)
-
-    reactor.listenTCP(app.config['PORT'], site, interface=app.config['HOST'])
-    reactor.run()
-    print 'Press return to exit'
+if __name__ == "__main__":
+    if not app.config['DEBUG']:
+        resource = WSGIResource(reactor, reactor.getThreadPool(), app)
+        site = Site(resource)
+        host = app.config['HOST']
+        port = app.config['PORT']
+        print 'Running server on %s:%s' % (host, port)
+        print 'Press any key to exit'
+        
+        reactor.listenTCP(app.config['PORT'], site, interface=app.config['HOST'])
+        reactor.run()
+        
+    else:
+        run_app()
 
 

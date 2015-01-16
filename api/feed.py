@@ -15,7 +15,6 @@ def update_feed_articles(feed):
         if 'links' in entry:
             href = entry.links[-1].href
         elif 'href' in entry:
-            print 'href in entry'
             href = entry.href
         
         if entry.get('published_parsed'):

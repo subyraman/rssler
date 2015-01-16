@@ -50,9 +50,12 @@ angular = assets.Bundle(
     output='ng.js')
 env.register('angular', angular)
 
-if __name__== "__main__":
-    # If this file is called directly, do a manual build.
+def manual_build():
     angular.build()
     sass.build()
     coffee.build()
     bootstrap_css.build()
+
+if __name__== "__main__":
+    # If this file is called directly, do a manual build.
+    manual_build()

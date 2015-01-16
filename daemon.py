@@ -36,7 +36,12 @@ class AsyncClient:
         print 'Processing feeds...'
         for url, entry in self.feed_data.iteritems():
             if not entry.get('parsed'):
-                continue    
+                continue
+
+            # Feed may have been deleted during request process
+            if not session.query(Feed).get(entry['feed'].id):
+                continue
+
             self.process_articles(entry['parsed'], entry['feed'])
             self.updated_feeds += 1
 
@@ -119,7 +124,7 @@ class AsyncClient:
 
 
 def run():
-    print "%s: Refreshing feeds...\n" % str(datetime.now())
+    print "%s: Refreshing feeds..." % str(datetime.now())
     async_client = AsyncClient()
     async_client.run()
 

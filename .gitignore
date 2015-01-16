@@ -4,3 +4,4 @@ static/.webassets-cache/*
 twistd.log
 rss.db
 .Python
+static/webassets-external
