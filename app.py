@@ -15,3 +15,4 @@ db = SQLAlchemy(app)
 Compress(app)
 api = Api(app)
 env = Environment(app)
+
