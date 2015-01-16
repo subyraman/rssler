@@ -32,4 +32,6 @@ do (angular=angular) ->
                 .then =>
                     @$modalInstance.close()
 
+        close: -> @$modalInstance.close()
+
     angular.module('rssler').controller('AdvancedSearchController', ['$modalInstance', 'feedService', 'categoryService', 'searchService', AdvancedSearchController])

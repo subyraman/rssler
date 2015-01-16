@@ -39,7 +39,8 @@ class Article(db.Model):
     def to_dict(self, with_content=False):
         d = self.__dict__
 
-        d['feed'] = {'title': self.feed.title, 'id': self.feed.id}
+        if self.feed:
+            d['feed'] = {'title': self.feed.title, 'id': self.feed.id}
         d.pop('feed_id')
 
         if with_content:
