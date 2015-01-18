@@ -1,6 +1,6 @@
 import os
 
-DEBUG = True
+DEBUG = False
 current_dir = os.path.dirname(os.path.realpath(__file__))
 
 class BaseConfig(object):
