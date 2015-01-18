@@ -1,16 +1,12 @@
 do (angular=angular) ->
     class AdvancedSearchController
         constructor:  (@$modalInstance, @feedService, @categoryService, @searchService) ->
-            @feeds = []
             @categories = @categoryService.categories
             @startOpened = false
             @endOpened = false
             @dateFormat = 'dd-MMMM-yyyy'
             @searchData = {}
-
-            @feedService.getAllFeeds()
-                .then (response) => 
-                    _.replaceArray(@feeds, response.data.objects)
+            @feeds = _.uniqCollection(_.flatten(_.pluck(@categoryService.categories, 'feeds')))
 
         openStart: ($event) ->
             $event.preventDefault()

@@ -12,7 +12,7 @@ do (angular=angular) ->
             else if @currentView.data.type == 'feed'
                 @feedService.getFeedArticles(@currentView.data, @currentView.data.page)
             else if @currentView.data.type == 'search'
-                @searchService.search(@currentView.data.searchData, @currentView.data.page)
+                return
             else
                 @feedService.getAllFeedArticles(@currentView.data.page)
 

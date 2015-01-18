@@ -1,0 +1,402 @@
+
+
+
+
+    <script type="text/ng-template" id="/static/templates/delete_feed_modal.html"><div class="modal-header">
+    <h3 class="modal-title">Confirm Feed Deletion</h3>
+</div>
+
+<div class="modal-body">
+    <p>Are you sure you want to delete {{deleteFeedCtrl.feed.title}}?</p>
+    <p>All of its articles will be removed from the database.</p>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-warning" ng-click="deleteFeedCtrl.close()">Cancel</button>
+    <button class="btn btn-danger" ng-click="deleteFeedCtrl.deleteFeed()">Delete</button>
+</div></script>
+    <script type="text/ng-template" id="/static/templates/advanced_search_modal.html">
+<div class="modal-header">
+    <h3 class="modal-title">Advanced Search</h3>
+</div>
+
+<div class="modal-body advanced-search-body">
+        <div class="form-group">
+            <label>Keywords:</label>
+            <input type="text" class="form-control" id="new-feed-url" ng-model="advancedSearchCtrl.searchData.keywords">
+        </div>
+        <div class="row">
+            <div class="form-group col-lg-6">
+                <label for="new-feed-url">Feeds:</label>
+                <ui-select multiple ng-model="advancedSearchCtrl.selectedFeeds"
+                             theme="bootstrap"
+                             >
+                    <ui-select-match placeholder="Select a feed...">{{$item.title}}</ui-select-match>
+                    <ui-select-choices repeat="feed in advancedSearchCtrl.feeds | filter:$select.search">
+                        <div ng-bind-html="feed.title | highlight: $select.search"></div>
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+
+            <div class="form-group col-lg-6">
+                <label for="new-feed-url">Categories:</label>
+                <ui-select multiple ng-model="advancedSearchCtrl.selectedCategories"
+                             theme="bootstrap"
+                             >
+                    <ui-select-match placeholder="Select a category...">{{$item.title}}</ui-select-match>
+                    <ui-select-choices repeat="category in advancedSearchCtrl.categories | filter:$select.search">
+                        <div ng-bind-html="category.title | highlight: $select.search"></div>
+                    </ui-select-choices>
+                </ui-select>
+            </div>
+        </div>
+        <div class="row">
+            <div class="col-lg-6">
+                <label for="">Published After:</label>
+                <p class="input-group">
+                    <input type="text" class="form-control" show-weeks="{{false}}" datepicker-popup="MM/dd/yyyy" ng-model="advancedSearchCtrl.startDate" is-open="advancedSearchCtrl.startOpened" />
+                    <span class="input-group-btn">
+                    <button type="button" class="btn btn-default" ng-show="advancedSearchCtrl.startDate" ng-click="advancedSearchCtrl.startDate = ''"><i class="glyphicon glyphicon-remove"></i></button>
+                    <button type="button" class="btn btn-default" ng-click="advancedSearchCtrl.openStart($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </p>
+            </div>
+            <div class="col-lg-6">
+                <label for="">Published Before:</label>
+                <p class="input-group">
+                    <input type="text" class="form-control" show-weeks="{{false}}" datepicker-popup="MM/dd/yyyy" ng-model="advancedSearchCtrl.endDate" is-open="advancedSearchCtrl.endOpened" />
+                    <span class="input-group-btn">
+                        <button type="button" class="btn btn-default" ng-show="advancedSearchCtrl.endDate" ng-click="advancedSearchCtrl.endDate = ''"><i class="glyphicon glyphicon-remove"></i></button>
+                        <button type="button" class="btn btn-default" ng-click="advancedSearchCtrl.openEnd($event)"><i class="glyphicon glyphicon-calendar"></i></button>
+                    </span>
+                </p>
+            </div>
+        </div>
+
+
+</div>
+<div class="modal-footer">
+    <button class="btn btn-warning" ng-click="advancedSearchCtrl.close()">Cancel</button>
+    <button class="btn btn-primary" ng-click="advancedSearchCtrl.search()">Search</button>
+</div>
+</script>
+    <script type="text/ng-template" id="/static/templates/edit_dropdown.html"><div class="btn-group" dropdown is-open="status.isopen" ng-show="feedCtrl.currentView.data.type !== 'all' && feedCtrl.currentView.data.type !== 'search'">     
+    <button class="btn btn-default btn-xs dropdown-toggle" dropdown-toggle><span class="glyphicon glyphicon-cog"></span></button>
+    
+    <ul class="dropdown-menu" role="menu" ng-if="feedCtrl.currentView.data.type === 'feed'">
+        <li><a href="#" ng-click="feedCtrl.editFeed()"><span class="glyphicon glyphicon-wrench"></span> Edit Feed</a></li>
+        <li class="divider"></li>
+        <li><a href="#" ng-click="feedCtrl.deleteFeed()"><span class="glyphicon glyphicon-remove-sign"></span> Delete Feed</a></li>
+    </ul>
+
+    <ul class="dropdown-menu" role="menu" ng-if="feedCtrl.currentView.data.type === 'category'">
+        <li><a href="#" ng-click="feedCtrl.editCategory()"><span class="glyphicon glyphicon-wrench"></span> Edit Category</a></li>
+        <li class="divider"></li>
+        <li><a href="#" ng-click="feedCtrl.deleteCategory()"><span class="glyphicon glyphicon-remove-sign"></span> Delete Category</a></li>
+    </ul>
+</div></script>
+    <script type="text/ng-template" id="/static/templates/feed_table.html"><div ng-show="feedCtrl.hasCategories()">
+    <header>
+        <h3>{{feedCtrl.currentView.data.title}}</h3>
+        <pagination ng-show="feedCtrl.currentFeed.length" total-items="feedCtrl.currentView.data.totalItems" ng-model="feedCtrl.currentView.data.page" items-per-page="40" class="pagination-sm" max-size="5" boundary-links="true" rotate="false" ng-change="feedCtrl.updatePage()"></pagination>
+
+        <edit-dropdown></edit-dropdown>
+    </header>
+    <table class="table feed-table">
+        <tr ng-repeat="article in feedCtrl.currentFeed">
+            <td ng-class="{'col-sm-8': article.feed.title, 'col-sm-10': !article.feed.title}">
+                <a class="article-title" ng-click="mainCtrl.loadArticle(article)">{{article.title}}</a>
+            </td>
+            <td>
+                <h6 class="article-feed" ng-click="mainCtrl.loadFeed({id: article.feed.id})">{{article.feed.title}}</h6>
+            </td>
+            <td class="col-sm-2">
+                <span class='article-time'>{{article.published_at | dateFilter }}</span>
+            </td>
+        </tr>
+    </table>
+
+    <footer ng-show="feedCtrl.currentFeed.length">
+        <pagination total-items="feedCtrl.currentView.data.totalItems" ng-model="feedCtrl.currentView.data.page" items-per-page="40" class="pagination-sm" max-size="5" boundary-links="true" rotate="false" ng-change="feedCtrl.updatePage()"></pagination>
+    </footer>
+</div></script>
+    <script type="text/ng-template" id="/static/templates/edit_feed_modal.html"><div class="modal-header">
+    <h3 class="modal-title">Edit Feed</h3>
+</div>
+
+<div class="modal-body">
+
+    <div class="form-group">
+        <label for="new-feed-url">Feed Title:</label>
+        <input type="text" class="form-control" id="new-feed-url" ng-model="editFeedCtrl.feedData.title">
+    </div>
+    
+    <div class="form-group">
+        <label for="new-feed-url">Feed Categories:</label>
+        <ui-select multiple ng-model="editFeedCtrl.selectedCategories" theme="bootstrap" ng-if="editFeedCtrl.categories.length">
+            <ui-select-match placeholder="Edit Categories">{{$item.title}}</ui-select-match>
+            <ui-select-choices repeat="category in editFeedCtrl.categories | filter:$select.search">
+                <div ng-bind-html="category.title | highlight: $select.search"></div>
+            </ui-select-choices>
+        </ui-select>
+    </div>
+
+    <alert ng-repeat="alert in editFeedCtrl.alerts" type="{{alert.type}}" close="editFeedCtrl.closeAlert(alert)">{{alert.msg}}</alert>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-warning" ng-click="editFeedCtrl.close()">Cancel</button>
+    <button class="btn btn-primary" ng-click="editFeedCtrl.editFeed()">Edit</button>
+</div></script>
+    <script type="text/ng-template" id="/static/templates/article_view.html"><div class="column col-sm-9 col-xs-11 col-sm-offset-3 col-xs-offset-1 article-view"
+    ng-controller="ArticleController as articleCtrl"
+    ng-show="mainCtrl.visible.articleView"
+    >
+
+    <header>
+        <a href="#" ng-click="mainCtrl.backToFeed()" class="btn btn-primary btn-sm">
+            <span class="glyphicon glyphicon-arrow-left"></span> Back
+        </a>
+    </header>
+    
+    <a href="{{articleCtrl.currentArticle.href}}" target="_blank">
+        <h2 ng-bind-html="articleCtrl.currentArticle.title"></h2>
+    </a>
+    <a href="" ng-click="mainCtrl.loadFeed(articleCtrl.currentArticle.feed)">
+        <h4 class="article-feed" ng-bind-html="articleCtrl.currentArticle.feed.title" ></h4>
+    </a>
+
+    <div ng-bind-html="articleCtrl.currentArticle.content"></div>
+    <footer>
+        <a href="#" ng-click="mainCtrl.backToFeed()" class="btn btn-primary btn-sm">
+            <span class="glyphicon glyphicon-arrow-left"></span> Back
+        </a>
+    </footer>
+</div></script>
+    <script type="text/ng-template" id="/static/templates/nav_bar.html"><nav class="navbar navbar-default" ng-controller="NavController as navCtrl">
+    <div class="row">
+    <div class="col-sm-2 col-xs-2">
+        <span class="glyphicon btn-lg" ng-class="{'glyphicon-refresh loading-spinner' : navCtrl.loadingStatus.isLoading}"></span>
+    </div>
+    <div class="column col-sm-5 col-xs-8 col-sm-offset-1 search-wrapper" ng-controller="SearchController as searchCtrl">
+        <form role='form' ng-submit="searchCtrl.search()">
+            <div class="input-group search-wrapper">
+                <input type="text" class="form-control" ng-model="searchCtrl.searchData.keywords" placeholder="Search for...">
+                <span class="input-group-btn">
+                    <button class="btn btn-default" type="submit">
+                        <span class="glyphicon glyphicon-search"></span><span class="hidden-xs">Search</span>
+                    </button>
+                    <button class="btn btn-default" type="button" ng-click="searchCtrl.advancedSearch($event)">
+                        <span class="glyphicon glyphicon-wrench"></span><span class="hidden-xs">Advanced</span>
+                    </button>
+              </span>
+            </div>
+        </form>
+    </div>
+
+    <div class="settings-icon"><span class="glyphicon btn btn-lg glyphicon-cog" ng-click="navCtrl.openSettings()"></span></div>
+    </div>
+</nav></script>
+    <script type="text/ng-template" id="/static/templates/main.html"><sidebar></sidebar>
+
+<div class="column col-sm-9 col-xs-11 col-sm-offset-3 col-xs-offset-1 feed-view" ng-controller="FeedController as feedCtrl" ng-show="mainCtrl.visible.feedView">
+    <feed-table></feed-table>
+    <new-user></new-user>
+</div>
+
+<article-view></article-view></script>
+    <script type="text/ng-template" id="/static/templates/new_user.html"><div ng-show="!feedCtrl.hasCategories()">
+    <div class="text-center"><h2>Hi There!</h2></div>
+
+    <div class="text-center"><p>Get started by adding some feeds or importing an OPML file.</p></div>
+
+    <div class="text-center">
+            <button class="btn btn-primary btn-lg" ng-click="mainCtrl.openNewFeedModal()">New Feed</button>
+    </div>    
+    <div class="text-center">
+        <button class="btn btn-primary btn-lg" ng-click="mainCtrl.openSettings()">Import OPML file</button>
+    </div>
+</div></script>
+    <script type="text/ng-template" id="/static/templates/delete_category_modal.html"><div class="modal-header">
+    <h3 class="modal-title">Confirm Category Deletion</h3>
+</div>
+
+<div class="modal-body">
+    <p>Are you sure you want to delete {{deleteCategoryCtrl.category.title}}?</p>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-warning" ng-click="deleteCategoryCtrl.close()">Cancel</button>
+    <button class="btn btn-danger" ng-click="deleteCategoryCtrl.deleteCategory()">Delete</button>
+</div></script>
+    <script type="text/ng-template" id="/static/templates/new_feed_modal.html"><div ng-show="newFeedCtrl.feedDataEmpty()">
+    <div class="modal-header">
+        <h3 class="modal-title">Add a New Feed</h3>
+    </div>
+
+    <form name="TestFeedForm">
+        <div class="modal-body">
+                <div class="form-group">
+                    <label for="new-feed-url">URL for the feed you wish to add:</label>
+                    <input type="text" class="form-control" id="new-feed-url" ng-model="newFeedCtrl.formData.xml_url">
+                </div>
+                <alert ng-repeat="alert in newFeedCtrl.testAlerts" type="{{alert.type}}" close="newFeedCtrl.closeAlert(alert)">{{alert.msg}}</alert>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-warning" ng-click="newFeedCtrl.close()">Cancel</button>
+            <button class="btn btn-primary" ng-click="newFeedCtrl.testFeed()">Add</button>
+        </div>
+    </form>
+</div>
+
+<div ng-show="!newFeedCtrl.feedDataEmpty()">
+    <div>
+
+        <div class="modal-header">
+            <h3 class="modal-title">Confirm New Feed</h3>
+        </div>
+        
+        <div class="modal-body">
+
+            <p>{{newFeedCtrl.feedData.title}}</p>
+            <p>{{newFeedCtrl.feedData.subtitle}}</p>
+            <p>{{newFeedCtrl.feedData.xml_url}}</p>
+
+            <ui-select multiple ng-model="newFeedCtrl.selectedCategories"
+                         theme="bootstrap" ng-if="newFeedCtrl.categories.length"
+                         >
+                <ui-select-match placeholder="Select a category...">{{$item.title}}</ui-select-match>
+                <ui-select-choices repeat="category in newFeedCtrl.categories | filter:$select.search">
+                    <div ng-bind-html="category.title | highlight: $select.search"></div>
+                </ui-select-choices>
+            </ui-select>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn btn-warning" ng-click="newFeedCtrl.close()">Cancel</button>
+            <button class="btn btn-primary" ng-click="newFeedCtrl.addFeed()">Add</button>
+        </div>
+        
+    </div>
+</div></script>
+    <script type="text/ng-template" id="/static/templates/settings_modal.html"><div class="modal-body settings-modal">
+    <tabset justified="true">
+    <tab heading="OPML Import">
+        <div class="form-group">
+            <label for="">Choose an OPML file to import</label>
+            <input type="file" id="file" name="file"/>
+        </div>
+
+        <div class="form-group">
+            <button class="btn btn-primary" ng-click="settingsCtrl.submit()">Submit</button>
+        </div>
+
+        <alert ng-repeat="alert in settingsCtrl.opmlAlerts" type="{{alert.type}}" close="settingsCtrl.closeAlert(alert)">{{alert.msg}}</alert>
+
+    </tab>
+
+    <tab heading="Database">
+        <div class="row">
+            <p>Database size is currently <b>{{settingsCtrl.dbSize | byteFilter}}</b>.</p>
+        </div>
+        <div class="row">
+            <a href="/db" target="_self" class="btn btn-default btn-lg">Download Database</a>
+        </div>
+    </tab>
+  </tabset>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-warning" ng-click="settingsCtrl.close()">Close</button>
+</div></script>
+    <script type="text/ng-template" id="/static/templates/edit_category_modal.html"><div class="modal-header">
+    <h3 class="modal-title">New Category</h3>
+</div>
+
+<div class="modal-body">
+    <div class="form-group">
+        <label for="new-category-title">Category Title:</label>
+        <input type="text" class="form-control" id="new-category-title" ng-model="editCategoryCtrl.categoryData.title">
+    </div>
+
+    <div class="form-group">
+        <label for="new-feed-url">Feeds:</label>
+        <ui-select multiple ng-model="editCategoryCtrl.selectedFeeds"
+                     theme="bootstrap"
+                     >
+            <ui-select-match placeholder="Select a category...">{{$item.title}}</ui-select-match>
+            <ui-select-choices repeat="feed in editCategoryCtrl.feeds | filter:$select.search">
+                <div ng-bind-html="feed.title | highlight: $select.search"></div>
+            </ui-select-choices>
+        </ui-select>
+    </div>
+
+    <alert ng-repeat="alert in editCategoryCtrl.alerts" type="{{alert.type}}" close="editCategoryCtrl.closeAlert(alert)">{{alert.msg}}</alert>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-warning" ng-click="editCategoryCtrl.close()">Cancel</button>
+    <button class="btn btn-primary" ng-click="editCategoryCtrl.editCategory()">Edit</button>
+</div></script>
+    <script type="text/ng-template" id="/static/templates/sidebar.html"><div class="column col-sm-3 col-xs-1 sidebar-offcanvas" id="sidebar" sidebar-expand ng-controller="CategoryController as categoryCtrl">   
+    <ul class="nav">
+    <li><a href="#" data-toggle="offcanvas" class="visible-xs text-center"><i class="glyphicon glyphicon-chevron-right"></i></a></li>
+  </ul>
+   
+    <ul class="nav hidden-xs" id="lg-menu">
+        
+        <button class="btn btn-primary btn-sm new-feed" ng-click="mainCtrl.openNewFeedModal()"><span class="glyphicon glyphicon-plus-sign"></span> New Feed</button>
+        <button class="btn btn-primary btn-sm new-feed" ng-if="categoryCtrl.hasCategories()" ng-click="mainCtrl.newCategory()"><span class="glyphicon glyphicon-plus-sign"></span> New Category</button>
+        <li>
+            <a href="#" ng-if="categoryCtrl.hasCategories()"><span ng-click="mainCtrl.loadAllCategoryFeeds()">All</span></a>
+        </li>
+
+        <li ng-repeat="category in categoryCtrl.categories">
+            <a href="#">
+                <span ng-click="mainCtrl.loadCategoryFeeds(category)">{{category.title}}</span>
+                <i class="glyphicon"
+                    ng-class="{'glyphicon-chevron-right': !category.expanded, 'glyphicon-chevron-down': category.expanded}" ng-click="categoryCtrl.toggle(category)">
+                </i>
+            </a>
+            <ul class="feeds slide" slide-down slide-toggle-duration="100" category="category">
+                <li ng-repeat="feed in category.feeds">
+                    <a href="#" ng-click="mainCtrl.loadFeed(feed)">{{feed.title}}</a>
+                </li>
+            </ul>
+        </li>
+
+        <li ng-repeat="feed in categoryCtrl.uncategorized.feeds">
+            <a href="#" ng-click="mainCtrl.loadFeed(feed)">{{feed.title}}</a>
+        </li>
+    </ul>
+</div></script>
+    <script type="text/ng-template" id="/static/templates/new_category_modal.html"><div class="modal-header">
+    <h3 class="modal-title">Add A New Category</h3>
+</div>
+
+<div class="modal-body">
+
+    <div class="form-group">
+        <label for="">Title:</label>
+        <input type="text" class="form-control" ng-model="newCategoryCtrl.formData.title">
+    </div>
+    
+    <div class="form-group">
+        <label for="">Feeds:</label>
+        <ui-select multiple ng-model="newCategoryCtrl.selectedFeeds"
+                             theme="bootstrap"
+                             >
+            <ui-select-match placeholder="Select a category...">{{$item.title}}</ui-select-match>
+            <ui-select-choices repeat="category in newCategoryCtrl.feeds | filter:$select.search">
+                <div ng-bind-html="category.title | highlight: $select.search"></div>
+            </ui-select-choices>
+        </ui-select>
+    </div>
+
+    <alert ng-repeat="alert in newCategoryCtrl.alerts" type="{{alert.type}}" close="newCategoryCtrl.closeAlert(alert)">{{alert.msg}}</alert>
+</div>
+
+<div class="modal-footer">
+    <button class="btn btn-warning" ng-click="newCategoryCtrl.close()">Close</button>
+    <button class="btn btn-primary" ng-click="newCategoryCtrl.addCategory()">Save</button>
+</div></script>

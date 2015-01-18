@@ -1,0 +1,12 @@
+<div ng-show="!feedCtrl.hasCategories()">
+    <div class="text-center"><h2>Hi There!</h2></div>
+
+    <div class="text-center"><p>Get started by adding some feeds or importing an OPML file.</p></div>
+
+    <div class="text-center">
+            <button class="btn btn-primary btn-lg" ng-click="mainCtrl.openNewFeedModal()">New Feed</button>
+    </div>    
+    <div class="text-center">
+        <button class="btn btn-primary btn-lg" ng-click="mainCtrl.openSettings()">Import OPML file</button>
+    </div>
+</div>

@@ -28,8 +28,19 @@ do (angular=angular) ->
         deleteCategory: (formData) ->
             @$http.delete("/category/#{formData.id}", formData)
 
-        categoryExists: (title) ->
-            return _.where(@categories, {'title': title}).length > 0
+        categoryExists: (title, id) ->
+            existingCategory = _.find(@categories, {'title': title})
+
+            if not id and not existingCategory
+                return false
+            if not id and existingCategory
+                return true
+
+            if existingCategory.id == id
+                return false
+            else
+                return true
+
 
         hasCategories: ->
             if @categories.length

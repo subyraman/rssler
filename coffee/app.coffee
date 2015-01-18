@@ -18,3 +18,9 @@ do (angular=angular) ->
         oldArray.push.apply(oldArray, newArray)
 
         return oldArray
+
+    _.mixin uniqCollection: (collection) ->
+        uniqified = _.uniq collection, (item, key, id)  ->
+            return item.id
+
+        return uniqified

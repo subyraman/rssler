@@ -47,8 +47,9 @@
             <div class="main-content" ng-view></div>
 
         </div>
-
+         <%include file="angular.html" />
         % if app.config['DEBUG']:
+
             % for url in env['angular'].urls():
                 <script src="${url}"></script>
             % endfor

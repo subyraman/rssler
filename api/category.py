@@ -32,8 +32,8 @@ class CategoryAPI(Resource):
         feed_ids = params.get('feedIds')
         title = params.get('title')
 
-
-        if Category.query.filter_by(title=title).first():
+        existing_category = Category.query.filter_by(title=title).first()
+        if existing_category and existing_category.id is not category_id:
             msg = "%s already exists in the database."
             return {'msg': msg, 'type': 'danger'}, 422
 
