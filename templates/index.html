@@ -37,15 +37,16 @@
                     </div>
                 </div>
             </div>
-        </div>
+        
 
-        <nav-bar></nav-bar>
-        <div class="container-fluid">
+            <nav-bar></nav-bar>
+            <div class="container-fluid" ng-show="loadingCtrl.hasLoaded">
 
-            
+                
 
-            <div class="main-content" ng-view></div>
+                <div class="main-content" ng-view></div>
 
+            </div>
         </div>
          <%include file="angular.html" />
         % if app.config['DEBUG']:
