@@ -1,5 +1,4 @@
 do (angular=angular) ->
-    console.log ('running article view')
     class ArticleView
         restrict: 'E'
         replace: true

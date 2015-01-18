@@ -1,5 +1,4 @@
 do (angular=angular) ->
-    console.log 'running new user'
     class NewUser
         restrict: 'E'
         replace: true
