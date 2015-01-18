@@ -5,19 +5,15 @@ do (angular=angular) ->
             @categoryData =
                 title: @viewService.currentView.data.title
                 id: @viewService.currentView.data.id
-            @feeds = []
-            @selectedFeeds = []
-            @alerts = []
+
+            @feeds = _.uniqCollection(_.flatten(_.pluck(@categoryService.categories, 'feeds')))
 
             categoryFeeds = _.find(@categoryService.categories, (category) => category.id == @categoryData.id).feeds
             selectedIds = _.pluck(categoryFeeds, 'id')
+            @selectedFeeds =  _.where(@feeds, (feed) -> _.contains(selectedIds, feed.id))
 
-            @feedService.getAllFeeds()
-                .then (response) => 
-                    _.replaceArray(@feeds, response.data.objects)
+            @alerts = []
 
-                    selectedFeeds = _.where(@feeds, (feed) -> _.contains(selectedIds, feed.id))
-                    _.replaceArray(@selectedFeeds, selectedFeeds)
 
         isValid: ->
             valid = true
@@ -27,8 +23,12 @@ do (angular=angular) ->
                 @alerts.push({'msg': "Please select a title.", 'type': 'danger'})
                 valid = false
 
-            if @categoryService.categoryExists(@categoryData.title)
+            if @categoryService.categoryExists(@categoryData.title, @categoryData.id)
                 @alerts.push({'msg': "#{@categoryData.title} already exists in database.", 'type': 'danger'})
+                valid = false
+
+            if not @selectedFeeds.length
+                @alerts.push({'msg': "Please select at least one feed.", 'type': 'danger'})
                 valid = false
             
             return valid

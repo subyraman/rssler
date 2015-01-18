@@ -4,12 +4,8 @@ do (angular=angular) ->
         constructor: (@$modalInstance, @categoryService, @feedService) ->
             @formData = {}
             @categories = categoryService.categories
-            @feeds = []
+            @feeds = _.uniqCollection(_.flatten(_.pluck(@categoryService.categories, 'feeds')))
             @alerts = []
-
-            @feedService.getAllFeeds()
-                .then (response) => 
-                    _.replaceArray(@feeds, response.data.objects)
 
         isValid: ->
             valid = true
@@ -20,6 +16,9 @@ do (angular=angular) ->
                 valid = false
             if not @formData.title
                 @alerts.push({'msg': "Please select a title.", 'type': 'danger'})
+                valid = false
+            if not @selectedFeeds.length
+                @alerts.push({'msg': "Please select at least one feed.", 'type': 'danger'})
                 valid = false
             
             return valid

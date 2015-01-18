@@ -1,9 +1,11 @@
 import os, sys
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '.env/lib/python2.7/site-packages'))
 from flask.ext import assets
+from mako.template import Template
 from config import FinalConfig
 from app import env
 import glob2 as glob
+import codecs
 
 env.auto_build = FinalConfig.ASSETS_DEBUG
 env.manifest = 'cache' if FinalConfig.ASSETS_DEBUG else 'file'
@@ -50,11 +52,25 @@ angular = assets.Bundle(
     output='ng.js')
 env.register('angular', angular)
 
+def cache_angular_templates():
+    current_dir = os.path.dirname(os.path.realpath(__file__))
+    angular_template_path = os.path.join(current_dir, 'static/templates/')
+    template_path = os.path.join(current_dir, 'templates/angular.mako')
+    output_path = os.path.join(current_dir, 'templates/angular.html')
+    t = Template(filename=template_path)
+    output = t.render(angular_template_path=angular_template_path)
+
+    codecs.open(output_path, 'w', 'utf-8').write(output)
+
+
 def manual_build():
     angular.build()
     sass.build()
     coffee.build()
     bootstrap_css.build()
+
+
+cache_angular_templates()
 
 if __name__== "__main__":
     # If this file is called directly, do a manual build.
