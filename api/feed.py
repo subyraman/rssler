@@ -100,6 +100,28 @@ class FeedsAPI(Resource):
 
 api.add_resource(FeedsAPI, '/feeds')
 
+class FeedArticlesAPI(Resource):
+    def get(self, feed_id):
+        ret = Feed.query.get(feed_id).to_dict()
+
+        current_page = request.args.get('page') or 1
+        current_page = ret['page'] = int(current_page)
+
+        q = Article.query\
+            .filter(Article.feed_id == feed_id)\
+            .order_by(desc(Article.published_at))
+
+        num_results = ret['num_results'] = q.count()
+        articles = q.paginate(current_page, 40).items
+
+        d = divmod(num_results, 40)
+        ret['total_pages'] = d[0] if not d[1] else d[0] + 1
+
+        ret['articles'] = [article.to_dict(with_content=False, with_feed=False) for article in articles]
+        
+        return jsonify(ret)
+
+api.add_resource(FeedArticlesAPI, '/feed/<int:feed_id>/articles')
 
 @app.route('/feed/test/', methods=['GET', 'POST'])
 def test_feed():

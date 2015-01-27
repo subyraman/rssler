@@ -11,7 +11,10 @@ do (angular=angular) ->
         getFeedArticles: (feed, page) ->
             @viewService.loadingStatus.isLoading = true
 
-            @$http.get("/feed/#{feed.id}")
+            pageFragment = if page then "?page=#{page}" else "?page=1"
+            url = "/feed/#{feed.id}/articles" + pageFragment
+
+            @$http.get(url)
                 .then (response) =>
                     @currentFeed.length = 0
                     @currentFeed.push.apply(@currentFeed, response.data.articles)
@@ -22,7 +25,7 @@ do (angular=angular) ->
                         type: 'feed'
                         page: response.data.page
                         categories: response.data.categories
-                        totalPages: parseInt(response.data.total_pages)  * 40
+                        totalItems: parseInt(response.data.total_pages)  * 40
 
                 .finally => @viewService.loadingStatus.isLoading = false
 

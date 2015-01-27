@@ -36,11 +36,13 @@ class Article(db.Model):
             setattr(self, key, value)
 
     @hybrid_method
-    def to_dict(self, with_content=False):
+    def to_dict(self, with_content=False, with_feed=True):
         d = self.__dict__
 
-        if self.feed:
+        if self.feed and with_feed:
             d['feed'] = {'title': self.feed.title, 'id': self.feed.id}
+        else:
+            d.pop('feed')
         d.pop('feed_id')
 
         if with_content:
@@ -63,18 +65,11 @@ class Feed(db.Model):
 
     @hybrid_method
     def to_dict(self, with_articles=True, with_categories=True):
-        d = self.__dict__
-        articles = [{'id': article.id, 'published_at': article.published_at, 'title': article.title} for article in self.articles]
-
-        if with_articles:
-            d['articles'] = sorted(articles, key=lambda x: x['published_at'], reverse=True)
-        else:
-            d.pop('articles')
+        d = {'id': self.id, 'title': self.title}
 
         if with_categories:
             d['categories'] = [{'id': category.id, 'title': category.title} for category in self.categories]
 
-        d.pop('_sa_instance_state')
 
         return d
 
