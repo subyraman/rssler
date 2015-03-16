@@ -21,8 +21,7 @@ Session.configure(bind=engine)
 session = Session()
 
 class AsyncClient:
-    def __init__(self):
-        
+    def __init__(self): 
         self.updated_feeds = 0
         self.new_articles = 0
         
@@ -44,8 +43,7 @@ class AsyncClient:
 
             self.process_articles(entry['parsed'], entry['feed'])
             self.updated_feeds += 1
-
-        
+ 
         print "%s: Updated %s of %s feeds, %s new articles.\n" % (
             str(datetime.now()), self.updated_feeds, self.total_feeds, self.new_articles)
 
@@ -119,8 +117,6 @@ class AsyncClient:
       
         dl = defer.DeferredList(deferreds, consumeErrors=1)
         dl.addCallback(self.list_callback)
-
-
 
 def run():
     # Give time for the app sequence to create the DB
