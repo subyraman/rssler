@@ -46,7 +46,8 @@ class AsyncClient:
             self.updated_feeds += 1
 
         
-        print "%s: Updated %s of %s feeds, %s new articles.\n" % (str(datetime.now()), self.updated_feeds, self.total_feeds, self.new_articles)
+        print "%s: Updated %s of %s feeds, %s new articles.\n" % (
+            str(datetime.now()), self.updated_feeds, self.total_feeds, self.new_articles)
 
         try:
             session.commit()
@@ -56,13 +57,11 @@ class AsyncClient:
         session.close()
 
     def process_articles(self, parsed, feed):
-        #print parsed
         for entry in parsed.entries:
             href = ''
             if 'links' in entry:
                 href = entry.links[-1].get('href')
             elif 'href' in entry:
-                print 'href in entry'
                 href = entry.href
             
             if entry.get('published_parsed'):
@@ -79,7 +78,7 @@ class AsyncClient:
             feed.articles.append(new_article)
             self.new_articles += 1
 
-    def pageCallback(self, result, url):
+    def page_callback(self, result, url):
         data = {
             'content': result,
             'url': url,
@@ -87,20 +86,20 @@ class AsyncClient:
 
         return data
      
-    def pageErrback(self, error, url):
+    def page_error_callback(self, error, url):
         return {
             'msg': error.getErrorMessage(),
             'err': error,
             'url': url,
          }
      
-    def getPageData(self, url):
+    def get_page_data(self, url):
         d = getPage(url.encode('utf-8'), timeout=10)
-        d.addCallback(self.pageCallback, url)
-        d.addErrback(self.pageErrback, url)
+        d.addCallback(self.page_callback, url)
+        d.addErrback(self.page_error_callback, url)
         return d
      
-    def listCallback(self, result):
+    def list_callback(self, result):
         for ignore, data in result:
             if data.has_key('err'):
                 continue
@@ -115,11 +114,11 @@ class AsyncClient:
     def run(self):
         deferreds = []
         for url in self.feed_data.keys():
-            d = self.getPageData(url)
+            d = self.get_page_data(url)
             deferreds.append(d)
       
         dl = defer.DeferredList(deferreds, consumeErrors=1)
-        dl.addCallback(self.listCallback)
+        dl.addCallback(self.list_callback)
 
 
 
